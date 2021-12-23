@@ -16,8 +16,7 @@ flowerNames = [
     'Dahlia', 
     'Foxglove',
     'Geranium', 
-    'Gerbera Daisy', 
-    'Honeysuckle vine',
+    'Gerbera Daisy',
     'Hop Tree', 
     'Lilac', 
     'Lotus', 
@@ -26,8 +25,6 @@ flowerNames = [
     'Peony', 
     'Primrose', 
     'Snapdragon',
-    'Snowdrop', 
     'Tuberous Begonia', 
-    'Moss rose', 
-    'Hydrangea'
+    'Moss rose',
 ]

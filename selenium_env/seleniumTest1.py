@@ -211,92 +211,29 @@ def main(flowerName):
         for element in checkTag:
             if element.tag_name == 'h3':
                 plantCareText += element.text + '\n'
+                # print('i am h3\n')
+                # print(element.text + '\n')
                 # checkTag = checkTag.find_element(By.XPATH, './following-sibling::ul')
                 # print(checkTag)
             elif element.tag_name == "ul":
-                print('i was ul')
-                getList = element.find_elements(By.TAG_NAME, "li")
+                # print('i was ul\n')
+                getList = element.find_elements(By.XPATH, "./child::li")
                 if len(getList) > 0:
                     for li in getList:
-                        try:
-                            getSubUl = li.find_element(By.TAG_NAME, "ul")
-                            if getSubUl:
-                                print('another ul')
-                                # plantCareText += li.text + '------'
-                                getSubList = getSubUl.find_elements(By.TAG_NAME, "li")
-                                if len(getSubList) > 0:
-                                    for subList in getSubList:
-                                        plantCareText += subList.text
-                        except:
+                        if li.text not in plantCareText:
+                            # print(li.text + '\n')
                             plantCareText += li.text
-                            continue
-                        # plantCareText += li.text + '00000000'
-                    plantCareText += '\n'
+                    # plantCareText += '\n'
                 # checkTag = checkTag.find_element(By.XPATH, './following-sibling')
             elif element.tag_name == "p":
-                print('i was p', element.text)
+                # print('i was p\n', element.text)
                 plantCareText += element.text
                 # checkTag = checkTag.find_element(By.XPATH, './following-sibling')
             elif element.tag_name == "div":
                 print('i am div')
                 break
 
-
-            # if  tagName[iterator] == 'h3':
-            #     checkHeader = textContentDiv.find_element(By.XPATH, f".//child::{tagName[iterator]}[{headerCount}]")
-            #     print('I am header: ', checkHeader.text)
-            #     getContent.append(checkHeader.text)
-            #     # f.write(checkHeader.text + "\n")
-            #     plantCareText += checkHeader.text + "\n"
-            #     # flower_obj["plant_care"] = flower_obj["plant_care"] + checkHeader.text + "\n"
-            #     headerCount += 1
-            #     if iterator == 2:
-            #         iterator = 0
-            #     elif iterator == 0:
-            #         iterator = 1
-            #     else:
-            #         iterator = 2
-            #     print(f'Header Count: {headerCount} Iterator: {iterator} UlCount: {ulCount}')
-
-            # elif tagName[iterator] == 'ul':
-            #     print('I am ul---------')
-            #     checkUl = textContentDiv.find_element(By.XPATH, f".//child::{tagName[iterator]}[{ulCount}]")
-            #     if checkUl:
-            #         getList = checkUl.find_elements(By.TAG_NAME, "li")
-            #         # print('i went in here', getList)
-            #         if len(getList) > 0:
-            #             # print('I am li: ', getList)
-            #             [getContent.append(li.text) for li in getList]
-            #             for li in getList:
-            #                 plantCareText += li.text
-            #                 # flower_obj["plant_care"] = flower_obj["plant_care"] + li.text
-            #             # flower_obj["plant_care"] = flower_obj["plant_care"] + '\n'
-            #             plantCareText += '\n'
-            #             # [f.write(li.text) for li in getList]
-            #             # f.write("\n")
-            #             print(getContent)
-            #             ulCount += 1
-            #             if iterator == 2:
-            #                 iterator = 0
-            # elif tagName[iterator] == 'p':
-            #     print("I was in here", iterator)
-            #     checkP = textContentDiv.find_element(By.XPATH, f".//child::{tagName[iterator]}[{pCount}]")
-            #     print(checkP)
-            #     if checkP:
-            #         print('I am paragraph: ', checkP)
-            #         getContent.append(checkP.text)
-            #         pCount += 1
-            #         plantCareText += checkP.text
-            #         # flower_obj["plant_care"] = flower_obj["plant_care"] + checkP.text
-            #         if iterator == 1:
-            #             iterator = 2
-            #     else:
-            #         iterator = 2
-            # else:
-            #     print(f'ULLLLLLLLL COUNT {ulCount}')
-            #     break
-
-        print(plantCareText)
+        # print(plantCareText)
         if flower_obj != {}:
             collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
             print(plantCareText)
@@ -309,7 +246,7 @@ def main(flowerName):
     except:
         print("--------------I WAS HERE AND DID NOT FIND ANYTHING--------------------")
         if flower_obj != {}:
-            result = collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
+            collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
             print(plantCareText)
             if plantCareText != '':
                 flower_obj['plant_care'] = plantCareText
@@ -318,6 +255,6 @@ def main(flowerName):
 
     driver.quit()
 
-for flower in script1_flowerNames.flowerNames:
-    main(flower)
-    time.sleep(5)
+# for flower in script1_flowerNames.flowerNames:
+main('Lilies')
+    # time.sleep(5)

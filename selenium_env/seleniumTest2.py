@@ -106,37 +106,38 @@ def main (flowerName):
                     print(secondHeaders[i].text)
                     if "Care Must-Knows" in secondHeaders[i].text:
                         print("i got it")
+                        f.write(flowerName + '\n')
                         headerTag = secondHeaders[i]
                     elif "Planting Must-Knows" in secondHeaders[i].text.strip():
                         print("I got it")
+                        f.write(flowerName + '\n')
                         headerTag = secondHeaders[i]
                     elif f"{flowerName} Care" in secondHeaders[i].text.strip():
                         print("I got it")
+                        f.write(flowerName + '\n')
                         headerTag = secondHeaders[i]
                     elif f"Seasonal {flowerName} Care" in secondHeaders[i].text.strip():
                         print("I got it")
+                        f.write(flowerName + '\n')
                         headerTag = secondHeaders[i]
-                if headerTag == "":
-                    f.write(flowerName + '\n')
-                contentDivs = headerTag.find_elements(By.XPATH, './following-sibling::div')
+                contentDivs = headerTag.find_elements(By.XPATH, './following-sibling::div[@class="paragraph"]')
                 iterator = 0
                 plantCareText = ""
                 while True:
                     if contentDivs[iterator].tag_name == "div" and contentDivs[iterator].get_attribute("class") == "paragraph":
-                        # print("--------------I AM A DIV-----------------")
-                        # print(contentDivs[iterator].find_element(By.TAG_NAME, "p").text)
-                        plantCareText += contentDivs[iterator].find_element(By.TAG_NAME, "p").text
+                        print("--------------I AM A DIV-----------------")
+                        if contentDivs[iterator].find_element(By.TAG_NAME, "p").text != 'Related: Annual Care Guide':
+                            plantCareText += contentDivs[iterator].find_element(By.TAG_NAME, "p").text
+                            print(contentDivs[iterator].find_element(By.TAG_NAME, "p").text)
                         iterator += 1
                     else:
                         break
                 [print(header.text) if "Care Must-Knows" in header.text else print("") for header in secondHeaders]
                 if flower_obj != {}:
-                    result = collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
-                    if result:
-                        linkDriver.quit()
-                        driver.quit()
+                    # collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
                     print(plantCareText)
                     if plantCareText != '':
+                        print('----------------------------')
                         flower_obj['plant_care'] = plantCareText
                         collection.insert_one(flower_obj)
             except:
@@ -146,6 +147,7 @@ def main (flowerName):
         driver.quit()
     driver.quit()
 
-for flower in script2_flowerNames.flowerNames:
-    main(flower)
+# for flower in script2_flowerNames.flowerNames:
+main('Sunflower')
     # time.sleep(5)
+f.close()

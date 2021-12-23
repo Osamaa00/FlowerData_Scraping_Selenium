@@ -6,5 +6,6 @@ flowerNames = [
     'Lilies', 
     'Hibiscus', 
     'Jasmine', 
-    'Lavender'
+    'Lavender',
+    'Hydrangeas'
 ]
