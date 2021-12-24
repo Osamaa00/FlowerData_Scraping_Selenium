@@ -26,7 +26,15 @@ def main (flowerName):
     driver = webdriver.Chrome(service=ser)
     flower_obj = {}
     driver.get(f"https://www.bhg.com/bin/plants/?name={flowerName}")
-    flower_obj["flower_name"] = flowerName
+    if flowerName == "Hardy Hibiscus":
+        flower_obj["flower_name"] = "Hibiscus"
+    elif flowerName == "Hybrid Tea Rose":
+        flower_obj["flower_name"] = "Rose"
+    elif flowerName == "Shasta Daisy":
+        flower_obj["flower_name"] = "Daisy"
+    else:
+        flower_obj["flower_name"] = flowerName
+        
     try:
         searchResultsDiv = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CLASS_NAME, "search-results-content-results-wrapper"))
@@ -73,21 +81,21 @@ def main (flowerName):
                     text = [li.text for li in liElements]
                     text = ", ".join(text)
                     flowerData[tableData[0].text] = text
-                    if tableData[0].text == "GENUS NAME":
-                        flower_obj["botanical_name"] = text
-                    elif tableData[0].text == "PLANT TYPE":
-                        flower_obj["plant_type"] = text
-                    elif tableData[0].text == "LIGHT":
-                        flower_obj["sun_exposure"] = text
-                    elif tableData[0].text == "FLOWER COLOR":
-                        flower_obj["flower_color"] = text
-                    elif tableData[0].text == "SPECIAL FEATURES":
-                        flower_obj["special_features"] = text
-                    elif tableData[0].text == "ZONES":
-                        flower_obj["hardiness_zones"] = text
-                    elif tableData[0].text == "SEASON FEATURES":
-                        flower_obj["bloom_time"] = text
-                    elif tableData[0].text == "HEIGHT":
+                    # if tableData[0].text == "GENUS NAME":
+                    #     flower_obj["botanical_name"] = text
+                    # elif tableData[0].text == "PLANT TYPE":
+                    #     flower_obj["plant_type"] = text
+                    # elif tableData[0].text == "LIGHT":
+                    #     flower_obj["sun_exposure"] = text
+                    # elif tableData[0].text == "FLOWER COLOR":
+                    #     flower_obj["flower_color"] = text
+                    # elif tableData[0].text == "SPECIAL FEATURES":
+                    #     flower_obj["special_features"] = text
+                    # elif tableData[0].text == "ZONES":
+                    #     flower_obj["hardiness_zones"] = text
+                    # elif tableData[0].text == "SEASON FEATURES":
+                    #     flower_obj["bloom_time"] = text
+                    if tableData[0].text == "HEIGHT":
                         flower_obj["height"] = text
                     elif tableData[0].text == "WIDTH":
                         flower_obj["width"] = text
@@ -95,59 +103,68 @@ def main (flowerName):
                 # print("This is flower data: ", flowerData)
                 print(flower_obj)
 
-                containerContent = WebDriverWait(linkDriver, 10).until(
-                    EC.presence_of_element_located((By.CLASS_NAME, "articleContainer__content"))
-                )
-                # print("Container Content: ", containerContent)
-                mainContentDiv = containerContent.find_element(By.XPATH, "./following-sibling::div")
-                secondHeaders = mainContentDiv.find_elements(By.TAG_NAME, "h2")
-                headerTag = ""
-                for i in range(len(secondHeaders)):
-                    print(secondHeaders[i].text)
-                    if "Care Must-Knows" in secondHeaders[i].text:
-                        print("i got it")
-                        f.write(flowerName + '\n')
-                        headerTag = secondHeaders[i]
-                    elif "Planting Must-Knows" in secondHeaders[i].text.strip():
-                        print("I got it")
-                        f.write(flowerName + '\n')
-                        headerTag = secondHeaders[i]
-                    elif f"{flowerName} Care" in secondHeaders[i].text.strip():
-                        print("I got it")
-                        f.write(flowerName + '\n')
-                        headerTag = secondHeaders[i]
-                    elif f"Seasonal {flowerName} Care" in secondHeaders[i].text.strip():
-                        print("I got it")
-                        f.write(flowerName + '\n')
-                        headerTag = secondHeaders[i]
-                contentDivs = headerTag.find_elements(By.XPATH, './following-sibling::div[@class="paragraph"]')
-                iterator = 0
-                plantCareText = ""
-                while True:
-                    if contentDivs[iterator].tag_name == "div" and contentDivs[iterator].get_attribute("class") == "paragraph":
-                        print("--------------I AM A DIV-----------------")
-                        if contentDivs[iterator].find_element(By.TAG_NAME, "p").text != 'Related: Annual Care Guide':
-                            plantCareText += contentDivs[iterator].find_element(By.TAG_NAME, "p").text
-                            print(contentDivs[iterator].find_element(By.TAG_NAME, "p").text)
-                        iterator += 1
-                    else:
-                        break
-                [print(header.text) if "Care Must-Knows" in header.text else print("") for header in secondHeaders]
                 if flower_obj != {}:
                     # collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
-                    print(plantCareText)
-                    if plantCareText != '':
-                        print('----------------------------')
-                        flower_obj['plant_care'] = plantCareText
-                        collection.insert_one(flower_obj)
+                    # if plantCareText != '':
+                    #     print('----------------------------')
+                        # flower_obj['plant_care'] = plantCareText
+                    collection.insert_one(flower_obj)
+
+                # containerContent = WebDriverWait(linkDriver, 10).until(
+                #     EC.presence_of_element_located((By.CLASS_NAME, "articleContainer__content"))
+                # )
+                # # print("Container Content: ", containerContent)
+                # mainContentDiv = containerContent.find_element(By.XPATH, "./following-sibling::div")
+                # secondHeaders = mainContentDiv.find_elements(By.TAG_NAME, "h2")
+                # headerTag = ""
+                # for i in range(len(secondHeaders)):
+                #     print(secondHeaders[i].text)
+                #     if "Care Must-Knows" in secondHeaders[i].text:
+                #         print("i got it")
+                #         f.write(flowerName + '\n')
+                #         headerTag = secondHeaders[i]
+                #     elif "Planting Must-Knows" in secondHeaders[i].text.strip():
+                #         print("I got it")
+                #         f.write(flowerName + '\n')
+                #         headerTag = secondHeaders[i]
+                #     elif f"{flowerName} Care" in secondHeaders[i].text.strip():
+                #         print("I got it")
+                #         f.write(flowerName + '\n')
+                #         headerTag = secondHeaders[i]
+                #     elif f"Seasonal {flowerName} Care" in secondHeaders[i].text.strip():
+                #         print("I got it")
+                #         f.write(flowerName + '\n')
+                #         headerTag = secondHeaders[i]
+                # contentDivs = headerTag.find_elements(By.XPATH, './following-sibling::div[@class="paragraph"]')
+                # iterator = 0
+                # plantCareText = ""
+                # while True:
+                #     try:
+                #         if contentDivs[iterator].tag_name == "div" and contentDivs[iterator].get_attribute("class") == "paragraph":
+                #             print("--------------I AM A DIV-----------------")
+                #             if contentDivs[iterator].find_element(By.TAG_NAME, "p").text != 'Related: Annual Care Guide':
+                #                 plantCareText += contentDivs[iterator].find_element(By.TAG_NAME, "p").text
+                #                 print(contentDivs[iterator].find_element(By.TAG_NAME, "p").text)
+                #             iterator += 1
+                #     except:
+                #         break
+                # # [print(header.text) if "Care Must-Knows" in header.text else print("") for header in secondHeaders]
+                # if flower_obj != {}:
+                #     # collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
+                #     if plantCareText != '':
+                #         print('----------------------------')
+                #         flower_obj['plant_care'] = plantCareText
+                #         collection.insert_one(flower_obj)
             except:
+                # print('quit here')
                 linkDriver.quit()
     except:
         print("no page found")
         driver.quit()
+    # print('quit here --')
     driver.quit()
 
-# for flower in script2_flowerNames.flowerNames:
-main('Sunflower')
-    # time.sleep(5)
+for flower in script2_flowerNames.flowerNames:
+    main(flower)
+    time.sleep(5)
 f.close()

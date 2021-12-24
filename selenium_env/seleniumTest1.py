@@ -30,7 +30,13 @@ def main(flowerName):
     flower_obj = {}
     driver.get(f"https://www.almanac.com/plant/{flowerName}")
     if flowerName == 'shasta-daisies':
-        flower_obj["flower_name"] = 'Daisy'
+        flowerName = 'Daisy'
+    elif flowerName == 'Roses':
+        flowerName = 'Rose'
+    elif flowerName == 'Lilies':
+        flowerName = 'Lily'
+    elif flowerName == 'Daffodils':
+        flowerName = 'Daffodil'
     else:
         flower_obj["flower_name"] = flowerName
     try:
@@ -82,7 +88,8 @@ def main(flowerName):
                 field__items_links_text = [div.find_element(By.TAG_NAME, "a").text for div in field__items]
                 print(field__items_links_text)
                 # f.write(": " + ", ".join(field__items_links_text) + "\n")
-                flower_obj['sun_exposure'] = ", ".join(field__items_links)
+                flower_obj['sun_exposure'] = ", ".join(field__items_links_text)
+                print(flower_obj)
         except:
             flower_obj["sun_exposure"] = ""
         # for div in content:
@@ -235,26 +242,31 @@ def main(flowerName):
 
         # print(plantCareText)
         if flower_obj != {}:
-            collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
-            print(plantCareText)
+            # collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
+            # print(plantCareText)
             if plantCareText != '':
                 flower_obj['plant_care'] = plantCareText
-                collection.insert_one(flower_obj)
+                print(flower_obj)
+                found = collection.find_one_and_update({ "flower_name": flowerName }, { '$set': flower_obj })
+                print(f"------------{found}")
+                # collection.insert_one(flower_obj)
         # f.close()
 
 
     except:
         print("--------------I WAS HERE AND DID NOT FIND ANYTHING--------------------")
         if flower_obj != {}:
-            collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
+            # collection.find_one_and_delete({ "botanical_name" : flower_obj["botanical_name"] })
             print(plantCareText)
             if plantCareText != '':
                 flower_obj['plant_care'] = plantCareText
-                collection.insert_one(flower_obj)
+                # collection.insert_one(flower_obj)
+                print(flower_obj)
+                found = collection.find_one_and_update({ "flower_name": flowerName }, { '$set': flower_obj })
+                print(f"------------{found}")
         driver.quit()
-
     driver.quit()
 
-# for flower in script1_flowerNames.flowerNames:
-main('Lilies')
-    # time.sleep(5)
+for flower in script1_flowerNames.flowerNames:
+    main(flower)
+    time.sleep(5)
